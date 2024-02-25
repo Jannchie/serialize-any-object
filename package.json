@@ -9,7 +9,7 @@
   },
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
-  "types": "./index.d.ts",
+  "types": "./dist/main.d.ts",
   "files": [
     "dist",
     "index.d.ts"
