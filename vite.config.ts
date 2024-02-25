@@ -5,9 +5,11 @@ export default defineConfig({
   build: {
     lib: {
       entry: './lib/main.ts',
-      name: 'SerializeAnything',
+      name: 'SerializeAnyObject',
       fileName: 'index',
     },
   },
-  plugins: [dts()],
+  plugins: [dts({
+    include: './lib/**/*',
+  })],
 })
