@@ -170,7 +170,7 @@ export function retrocycle($: any) {
             const path = element.$ref
             if (typeof path === 'string' && px.test(path)) {
               // eslint-disable-next-line no-eval
-              value[i] = eval(`this.${path}`)
+              value[i] = eval(path)
             }
             else {
               rez(element)
@@ -185,7 +185,7 @@ export function retrocycle($: any) {
             const path = item.$ref
             if (typeof path === 'string' && px.test(path)) {
               // eslint-disable-next-line no-eval
-              value[name] = eval(`this.${path}`)
+              value[name] = eval(path)
             }
             else {
               rez(item)
