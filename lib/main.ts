@@ -170,7 +170,7 @@ export function retrocycle($: any) {
             const path = element.$ref
             if (typeof path === 'string' && px.test(path)) {
               // eslint-disable-next-line no-eval
-              value[i] = eval.call({ $ }, `this.${path}`)
+              value[i] = eval(`this.${path}`)
             }
             else {
               rez(element)
@@ -185,7 +185,7 @@ export function retrocycle($: any) {
             const path = item.$ref
             if (typeof path === 'string' && px.test(path)) {
               // eslint-disable-next-line no-eval
-              value[name] = eval.call({ $ }, `this.${path}`)
+              value[name] = eval(`this.${path}`)
             }
             else {
               rez(item)
@@ -230,11 +230,11 @@ export function parse<T = any>(str: string, typeMap: Map<string, any> = new Map<
         if (typeof obj[key] === 'string') {
           if (obj[key].substring(0, 8) === '_NuFrRa_') {
             // eslint-disable-next-line no-eval
-            obj[key] = eval.call({}, obj[key].slice(8))
+            obj[key] = eval(obj[key].slice(8))
           }
           else if (obj[key].substring(0, 8) === 'function') {
             // eslint-disable-next-line no-eval
-            obj[key] = eval.call({}, obj[key])
+            obj[key] = eval(obj[key])
           }
         }
       }
