@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.2",
   "exports": {
-    "types": "./index.d.ts",
+    "types": "./dist/main.d.ts",
     "import": "./dist/index.js",
     "require": "./dist/index.umd.cjs"
   },
