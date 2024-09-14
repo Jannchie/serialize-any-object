@@ -59,7 +59,7 @@ export function decycle(object: any, replacer?: (value: any) => any) {
     let nu: any // The new object or array
 
     // If a replacer function was provided, then call it to get a replacement value.
-
+    const types = new Map()
     if (replacer !== undefined) {
       value = replacer(value)
     }
@@ -67,20 +67,17 @@ export function decycle(object: any, replacer?: (value: any) => any) {
     // 获取原型
     if (Array.isArray(value)) {
       for (const v of value) {
-        v.$type = v.constructor.name
+        types.set(path, v.constructor.name)
+        // v.$type = v.constructor.name
       }
     }
     if (typeof value === 'object' && value !== null && value.constructor !== Object) {
-      value.$type = value.constructor.name
+      types.set(path, value.constructor.name)
+      // value.$type = value.constructor.name
     }
-
     // 处理函数
-    if (
-      typeof value === 'function'
-    ) {
-      if (value.length < 8 || value.substring(0, 8) !== 'function') { // this is ES6 Arrow Function
-        return `_NuFrRa_${value}`
-      }
+    if (typeof value === 'function' && (value.length < 8 || value.substring(0, 8) !== 'function')) {
+      return `_NuFrRa_${value}`
     }
 
     // typeof null === "object", so go on if this value is really an object but not
@@ -122,12 +119,17 @@ export function decycle(object: any, replacer?: (value: any) => any) {
         Object.keys(value).forEach((name) => {
           nu[name] = derez(
             value[name],
-              `${path}[${JSON.stringify(name)}]`,
+            `${path}[${JSON.stringify(name)}]`,
           )
         })
+        const type = types.get(path)
+        if (type) {
+          nu.$type = type
+        }
       }
       return nu
     }
+
     return value
   }(object, '$'))
 }
@@ -155,7 +157,7 @@ export function retrocycle($: any) {
   // produces an array containing a single element which is the array itself.
 
   // eslint-disable-next-line no-control-regex
-  const px = /^\$(?:\[(?:\d+|"(?:[^\\"\u0000-\u001F]|\\(?:[\\"\/bfnrt]|u[0-9a-zA-Z]{4}))*")\])*$/;
+  const px = /^\$(?:\[(?:\d+|"(?:[^\\"\u0000-\u001F]|\\(?:[\\"/bfnrt]|u[0-9a-zA-Z]{4}))*")\])*$/;
 
   (function rez(value) {
     // The rez function walks recursively through the object looking for $ref
@@ -202,7 +204,7 @@ export function stringify(obj: any) {
   return JSON.stringify(decycle(obj))
 }
 
-export function parse<T = any>(str: string, typeMap: Map<string, any> = new Map<string, any>([])) {
+export function parse<T = any>(str: string, typeObj: Record<string, any> = {}) {
   const obj = retrocycle(JSON.parse(str))
   // 遍历 g2，根据 $type 设置原型。
   function visit(obj: any, visited = new Set<any>()) {
@@ -217,7 +219,7 @@ export function parse<T = any>(str: string, typeMap: Map<string, any> = new Map<
     }
     else if (typeof obj === 'object' && obj !== null) {
       if (obj.$type) {
-        const type = typeMap.get(obj.$type)
+        const type = typeObj[obj.$type]
         if (!type) {
           throw new Error(`Need type for ${obj.$type}, you should provide it in typeMap. (e.g. parse(str, new Map([['${obj.$type}', ${obj.$type}]]))`)
         }
@@ -230,7 +232,7 @@ export function parse<T = any>(str: string, typeMap: Map<string, any> = new Map<
         if (typeof obj[key] === 'string') {
           if (obj[key].substring(0, 8) === '_NuFrRa_') {
             // eslint-disable-next-line no-eval
-            obj[key] = eval(obj[key].slice(8))
+            eval(`let ${key} = ${obj[key].slice(8)}; obj[key] = ${key}`)
           }
           else if (obj[key].substring(0, 8) === 'function') {
             // eslint-disable-next-line no-eval

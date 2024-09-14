@@ -16,13 +16,16 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "test": "vitest",
+    "bench": "vitest bench"
   },
   "devDependencies": {
-    "@jannchie/eslint-config": "^3.0.0",
-    "eslint": "^8.57.0",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.10",
-    "vite-plugin-dts": "^3.7.3"
+    "@jannchie/eslint-config": "^3.4.0",
+    "eslint": "^9.10.0",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.5",
+    "vite-plugin-dts": "^4.2.1",
+    "vitest": "^2.1.0"
   }
 }
