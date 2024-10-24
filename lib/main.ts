@@ -67,7 +67,7 @@ export function decycle(object: any, replacer?: (value: any) => any) {
     // 获取原型
     if (Array.isArray(value)) {
       for (const v of value) {
-        types.set(path, v.constructor.name)
+        types.set(path, v?.constructor?.name)
         // v.$type = v.constructor.name
       }
     }
